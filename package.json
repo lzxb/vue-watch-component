@@ -1,0 +1,29 @@
+{
+  "name": "vue-watch-component",
+  "version": "0.0.1",
+  "description": "vue watch component",
+  "main": "dist/vue-watch-component.js",
+  "scripts": {
+    "test": "ava ./tests --verbose"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lzxb/vue-watch-component.git"
+  },
+  "keywords": [
+    "vue",
+    "vuex",
+    "vue-router",
+    "vuet"
+  ],
+  "author": "狼族小狈",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lzxb/vue-watch-component/issues"
+  },
+  "homepage": "https://github.com/lzxb/vue-watch-component#readme",
+  "devDependencies": {
+    "ava": "^0.24.0",
+    "vue": "^2.5.13"
+  }
+}
