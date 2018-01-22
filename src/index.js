@@ -1,3 +1,9 @@
+function isArray (arg) {
+  return Object.prototype.toString.call(arg) === '[object Array]';
+}
+function has (obj, key) {
+  return Object.prototype.hasOwnProperty.call(obj, key)
+}
 class VueWatchComponent {
   constructor () {
     this.watches = []
@@ -9,17 +15,27 @@ class VueWatchComponent {
   }
   init (vm) {
     const componentsSubs = this.watches.map(watchOption => {
+      const options = {
+        immediate: true
+      }
+      if (has(watchOption, 'deep')) {
+        options.deep = watchOption.deep
+      }
+      let isBtn = true
       return vm.$watch(() => {
         return watchOption.watch.call(vm)
       }, (newVal, oldVal) => {
-        if (newVal === watchOption.value) return
-        if (Object.prototype.hasOwnProperty.call(watchOption, 'value')) {
+        if (isBtn && watchOption.immediate !== true) {
+          isBtn = false
+          if (watchOption.value == newVal) {
+            return
+          }
+        }
+        if (typeof watchOption.handler === 'function' && (has(watchOption, 'value') || watchOption.immediate === true)) {
           watchOption.handler.call(vm, newVal, oldVal)
         }
         watchOption.value = newVal
-      }, {
-        immediate: true
-      })
+      }, options)
     })
     this.components.push(vm)
     this.componentsSubs.push(componentsSubs)
@@ -37,7 +53,7 @@ class VueWatchComponent {
 
 const toBe = (vm, callback) => {
   const { watchComponents } = vm.$options
-  if (!Array.isArray(watchComponents)) return
+  if (!isArray(watchComponents)) return
   watchComponents.forEach(watchComponent => {
     callback(watchComponent)
   })
@@ -59,6 +75,9 @@ VueWatchComponent.install = function (Vue) {
     }
   })
 }
+
+VueWatchComponent.version = '__version__'
+
 if (typeof window === 'object' && window.Vue) {
   window.Vue.use(VueWatchComponent)
 }

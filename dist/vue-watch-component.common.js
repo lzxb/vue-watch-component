@@ -1,8 +1,4 @@
-(function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-	typeof define === 'function' && define.amd ? define(factory) :
-	(global.VueWatchComponent = factory());
-}(this, (function () { 'use strict';
+'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
   return typeof obj;
@@ -159,6 +155,4 @@ if ((typeof window === 'undefined' ? 'undefined' : _typeof(window)) === 'object'
   window.Vue.use(VueWatchComponent);
 }
 
-return VueWatchComponent;
-
-})));
+module.exports = VueWatchComponent;

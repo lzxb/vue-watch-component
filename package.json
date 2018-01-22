@@ -2,9 +2,13 @@
   "name": "vue-watch-component",
   "version": "0.0.1",
   "description": "vue watch component",
-  "main": "dist/vue-watch-component.js",
+  "main": "dist/vue-watch-component.common.js",
+  "module": "dist/vue-watch-component.esm.js",
+  "unpkg": "dist/vue-watch-component.js",
   "scripts": {
-    "test": "ava ./tests --verbose"
+    "build": "node build.js",
+    "unit": "ava ./tests --verbose",
+    "test": "npm run build && npm run unit"
   },
   "repository": {
     "type": "git",
@@ -12,8 +16,9 @@
   },
   "keywords": [
     "vue",
-    "vuex",
+    "vue-watch-component",
     "vue-router",
+    "vuex",
     "vuet"
   ],
   "author": "狼族小狈",
@@ -24,6 +29,14 @@
   "homepage": "https://github.com/lzxb/vue-watch-component#readme",
   "devDependencies": {
     "ava": "^0.24.0",
+    "babel-plugin-transform-object-assign": "^6.22.0",
+    "babel-preset-es2015-rollup": "^3.0.0",
+    "babel-preset-stage-0": "^6.24.1",
+    "rollup": "^0.54.1",
+    "rollup-plugin-babel": "^3.0.3",
+    "rollup-plugin-replace": "^2.0.0",
+    "rollup-plugin-uglify": "^3.0.0",
+    "uglify-js": "^3.3.8",
     "vue": "^2.5.13"
   }
 }
