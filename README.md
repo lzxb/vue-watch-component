@@ -17,6 +17,7 @@ import WatchComponent from 'vue-watch-component'
 
 Vue.use(WatchComponent)
 
+// 1、创建一个watch component 实例
 const myWatch = new WatchComponent()
 
 myWatch.add({
@@ -33,6 +34,16 @@ myWatch.add({
   }
 })
 
-```
+// 2、在组件中使用
+const MyComponent = {
+  watchComponents: [
+    myWatch
+  ],
+  data () {
+    return {
+      count: 0
+    }
+  }
+}
 
-## Options
+```
