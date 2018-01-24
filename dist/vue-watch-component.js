@@ -162,3 +162,4 @@ if ((typeof window === 'undefined' ? 'undefined' : _typeof(window)) === 'object'
 return VueWatchComponent;
 
 })));
+//# sourceMappingURL=vue-watch-component.js.map

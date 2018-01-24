@@ -154,3 +154,4 @@ if ((typeof window === 'undefined' ? 'undefined' : _typeof(window)) === 'object'
 }
 
 export default VueWatchComponent;
+//# sourceMappingURL=vue-watch-component.esm.js.map

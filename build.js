@@ -39,7 +39,8 @@ const build = async (opts) => {
   await bundle.write({
     name: opts.name,
     format: opts.format,
-    file: `dist/${opts.destName}`
+    file: `dist/${opts.destName}`,
+    sourcemap: true
   })
 }
 
