@@ -5,7 +5,7 @@
 [![npm](https://img.shields.io/npm/dt/vue-watch-component.svg)](https://www.npmjs.com/package/vue-watch-component)
 
 ## 介绍
-在组件中使用全局状态，可以观测组件
+永久性观测组件中使用的全局状态发生是否变更
 
 ## 使用
 ``` bash
@@ -49,7 +49,8 @@ const MyComponent = {
     return {
       globalState
     }
-  }
+  },
+  // ... options
 }
 
 ```
