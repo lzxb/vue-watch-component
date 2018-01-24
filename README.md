@@ -1,5 +1,5 @@
 ## vue-watch-component
-[![Build Status](https://travis-ci.org/lzxb/vue-watch-component.svg?branch=dev)](https://travis-ci.org/lzxb/vue-watch-component)
+[![Build Status](https://travis-ci.org/lzxb/vue-watch-component.svg)](https://travis-ci.org/lzxb/vue-watch-component)
 [![npm](https://img.shields.io/npm/v/vue-watch-component.svg)](https://www.npmjs.com/package/vue-watch-component) 
 [![npm](https://img.shields.io/npm/dm/vue-watch-component.svg)](https://www.npmjs.com/package/vue-watch-component)
 [![npm](https://img.shields.io/npm/dt/vue-watch-component.svg)](https://www.npmjs.com/package/vue-watch-component)
