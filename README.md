@@ -20,7 +20,17 @@ Vue.use(WatchComponent)
 const myWatch = new WatchComponent()
 
 myWatch.add({
-  // ...
+  deep: false, // 是否检测对象内部的值发生变化，默认false
+  immediate: false, // 是否立即触发handler钩子回调，默认false
+  watch () {
+    // 观测数据变化，基于vm.$watch实现
+    // this 会指向到注入的组件
+    return this.count
+  },
+  handler (newVal, oldVal) {
+    // this 会指向到注入的组件
+    // 观测的数据发生变化，会调用此钩子
+  }
 })
 
 ```
