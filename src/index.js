@@ -12,6 +12,7 @@ class VueWatchComponent {
   }
   add (watch) {
     this.watches.push(watch)
+    return this
   }
   init (vm) {
     const componentsSubs = this.watches.map(watchOption => {

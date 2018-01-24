@@ -58,6 +58,7 @@ var VueWatchComponent = function () {
     key: 'add',
     value: function add(watch) {
       this.watches.push(watch);
+      return this;
     }
   }, {
     key: 'init',

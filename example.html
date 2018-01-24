@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Watch Component example</title>
+</head>
+<body>
+  <div id="app">
+    <p>{{globalState}}</p>
+    <button @click="isShow = !isShow">PageContent组件（{{isShow ? '激活中' : '已销毁'}}）</button><br />
+    <p>变化：{{globalState.count}}次，length：{{globalState.list.length}}</p>
+    <button @click="globalState.list.push(Date.now())">添加list值</button>
+    <hr />
+    <label v-if="!isShow">
+      <input type="checkbox" v-model="globalState.isReset" />打勾，等PageContent组件激活时重置状态
+    </label>
+    <page-content v-if="isShow" />
+  </div>
+  <script src="https://cdn.bootcss.com/vue/2.5.13/vue.js"></script>
+  <script src="./dist/vue-watch-component.js"></script>
+  <script>
+    // 全局状态管理，你也可以使用vuet、vuex等第三方状态管理工具
+    const globalState = {
+      isReset: false, // 是否重置状态
+      count: 0, // 统计list变化的次数
+      keyname: '', // 变化的次数
+      list: [] // 列表的内容
+    }
+
+    const watchComponent = new VueWatchComponent()
+
+    watchComponent
+      .add({
+        watch () {
+          return this.list
+        },
+        handler () {
+          globalState.count++
+        }
+      })
+      .add({
+        watch () {
+          return this.isReset
+        },
+        handler () {
+          if (!this.isReset) return
+          // 重置状态
+          this.isReset = false
+          this.count = 0
+          this.keyname = ''
+          this.list = []
+        }
+      })
+
+    const PageContent = {
+      watchComponents: [watchComponent], // 在组件中使用
+      template: `
+        <div>
+          <ul v-if="list.length">
+            <li v-for="(item, $index) in list">
+                {{item}}
+                <button @click="removeItem($index)">删除</button>
+            </li>
+          </ul>
+          <p v-else>暂无记录</p>
+        </div>
+      `,
+      data () {
+        return globalState
+      },
+      methods: {
+        removeItem (index) {
+          globalState.list.splice(index, 1)
+        }
+      }
+    }
+
+    const vm = new Vue({
+      el: '#app',
+      components: {
+        PageContent
+      },
+      data: {
+        isShow: true,
+        globalState
+      }
+    })
+  </script>
+</body>
+</html>

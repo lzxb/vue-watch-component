@@ -5,7 +5,7 @@
 [![npm](https://img.shields.io/npm/dt/vue-watch-component.svg)](https://www.npmjs.com/package/vue-watch-component)
 
 ## 介绍
-永久性观测组件中使用的全局状态发生是否变更
+只在组件激活时，观测数据变化
 
 ## 使用
 ``` bash
@@ -40,7 +40,7 @@ const globalState = {
   count: 0
 }
 
-// 3、在组件中使用
+// 3、在组件中使用，只有在组件激活时，才会进行观测
 const MyComponent = {
   watchComponents: [
     myWatch
@@ -55,4 +55,4 @@ const MyComponent = {
 
 ```
 
-`注意`，Watch Component会在组件的`created`、`activated`钩子触发观测，在组件的`deactivated`、`beforeDestroy`解除监听，并且将结果保存起来，等待下次钩子触发观测时比较是否变更
+`原理`，Watch Component会在组件的`created`、`activated`钩子触发观测，在组件的`deactivated`、`beforeDestroy`解除监听，并且将结果保存起来，等待下次钩子触发观测时比较是否变更
