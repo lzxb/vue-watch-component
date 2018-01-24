@@ -11,13 +11,14 @@
 ``` bash
 npm install --save vue-watch-component
 ```
+
 ```js
 import Vue from 'vue'
 import WatchComponent from 'vue-watch-component'
 
 Vue.use(WatchComponent)
 
-// 1、创建一个watch component 实例
+// 1、创建一个Watch Component 实例
 const myWatch = new WatchComponent()
 
 myWatch.add({
@@ -26,7 +27,7 @@ myWatch.add({
   watch () {
     // 观测数据变化，基于vm.$watch实现
     // this 会指向到注入的组件
-    return this.count
+    return this.globalState.count
   },
   handler (newVal, oldVal) {
     // this 会指向到注入的组件
@@ -34,16 +35,23 @@ myWatch.add({
   }
 })
 
-// 2、在组件中使用
+// 2、全局状态，可以使用Vuet、vuex等第三方状态管理库
+const globalState = {
+  count: 0
+}
+
+// 3、在组件中使用
 const MyComponent = {
   watchComponents: [
     myWatch
   ],
   data () {
     return {
-      count: 0
+      globalState
     }
   }
 }
 
 ```
+
+`注意`，Watch Component会在组件的`created`、`activated`钩子触发观测，在组件的`deactivated`、`beforeDestroy`解除监听，并且将结果保存起来，等待下次钩子触发观测时比较是否变更
