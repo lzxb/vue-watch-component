@@ -5,7 +5,7 @@
 [![npm](https://img.shields.io/npm/dt/vue-watch-component.svg)](https://www.npmjs.com/package/vue-watch-component)
 
 ## 介绍
-在组件中使用全局状态，可以观测组件
+在组件中使用全局状态，可以观测组件
 
 ## 使用
 ``` bash
