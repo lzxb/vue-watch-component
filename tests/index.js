@@ -27,6 +27,22 @@ ava.serial('add', t => {
   t.is(watchItem, wc.watches[0])
 })
 
+ava.serial('add', t => {
+  const wc = new WatchComponent()
+  const watchItem = {
+    watch () {
+      return this.name
+    },
+    handler () {
+    }
+  }
+  wc.add(watchItem)
+  wc.remove({})
+  t.is(watchItem, wc.watches[0])
+  wc.remove(watchItem)
+  t.deepEqual([], wc.watches)
+})
+
 ava.serial('base', async t => {
   const wc = new WatchComponent()
   let count = 0

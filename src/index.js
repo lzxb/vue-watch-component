@@ -14,6 +14,13 @@ class VueWatchComponent {
     this.watches.push(watch)
     return this
   }
+  remove (watch) {
+    const index = this.watches.indexOf(watch)
+    if (index > -1) {
+      this.watches.splice(index, 1)
+    }
+    return this
+  }
   init (vm) {
     const componentsSubs = this.watches.map(watchOption => {
       const options = {

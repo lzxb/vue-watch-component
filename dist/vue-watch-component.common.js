@@ -63,6 +63,15 @@ var VueWatchComponent = function () {
       return this;
     }
   }, {
+    key: 'remove',
+    value: function remove(watch) {
+      var index = this.watches.indexOf(watch);
+      if (index > -1) {
+        this.watches.splice(index, 1);
+      }
+      return this;
+    }
+  }, {
     key: 'init',
     value: function init(vm) {
       var componentsSubs = this.watches.map(function (watchOption) {
