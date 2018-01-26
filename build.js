@@ -4,7 +4,7 @@ const uglify = require('rollup-plugin-uglify')
 const { minify } = require('uglify-js')
 const replace = require('rollup-plugin-replace')
 const babel = require('rollup-plugin-babel')
-const package = require('./package')
+const packages = require('./package')
 
 if (!fs.existsSync('dist')) {
   fs.mkdirSync('dist')
@@ -21,7 +21,7 @@ const build = async (opts) => {
       plugins: ['transform-object-assign']
     }),
     replace({
-      '__version__': package.version
+      '__version__': packages.version
     })
   ]
   if (opts.env === 'production') {

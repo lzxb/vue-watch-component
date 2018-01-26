@@ -29,33 +29,30 @@
       list: [] // 列表的内容
     }
 
-    const watchComponent = new VueWatchComponent()
-
-    watchComponent
-      .add({
-        watch () {
-          return this.list
-        },
-        handler () {
-          globalState.count++
-        }
-      })
-      .add({
-        watch () {
-          return this.isReset
-        },
-        handler () {
-          if (!this.isReset) return
-          // 重置状态
-          this.isReset = false
-          this.count = 0
-          this.keyname = ''
-          this.list = []
-        }
-      })
+    const watchList = new window.VueWatchComponent({
+      watch () {
+        return this.list
+      },
+      handler () {
+        globalState.count++
+      }
+    })
+    const watchIsReset = new window.VueWatchComponent({
+      watch () {
+        return this.isReset
+      },
+      handler () {
+        if (!this.isReset) return
+        // 重置状态
+        this.isReset = false
+        this.count = 0
+        this.keyname = ''
+        this.list = []
+      }
+    })
 
     const PageContent = {
-      watchComponents: [watchComponent], // 在组件中使用
+      watchComponents: [watchList, watchIsReset], // 在组件中使用
       template: `
         <div>
           <ul v-if="list.length">
@@ -77,8 +74,7 @@
       }
     }
 
-    const vm = new Vue({
-      el: '#app',
+    const vm = new window.Vue({
       components: {
         PageContent
       },
@@ -87,6 +83,7 @@
         globalState
       }
     })
+    vm.$mount('#app')
   </script>
 </body>
 </html>

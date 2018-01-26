@@ -1,67 +1,57 @@
-function isArray (arg) {
-  return Object.prototype.toString.call(arg) === '[object Array]';
+const util = {
+  isArray (arg) {
+    return Object.prototype.toString.call(arg) === '[object Array]'
+  },
+  has (obj, key) {
+    return Object.prototype.hasOwnProperty.call(obj, key)
+  }
 }
-function has (obj, key) {
-  return Object.prototype.hasOwnProperty.call(obj, key)
-}
+
 class VueWatchComponent {
-  constructor () {
-    this.watches = []
-    this.components = []
-    this.componentsSubs = []
-  }
-  add (watch) {
-    this.watches.push(watch)
-    return this
-  }
-  remove (watch) {
-    const index = this.watches.indexOf(watch)
-    if (index > -1) {
-      this.watches.splice(index, 1)
-    }
-    return this
+  constructor (options) {
+    this.options = { ...options }
+    this.vm = null
+    this.unwatch = null
   }
   init (vm) {
-    const componentsSubs = this.watches.map(watchOption => {
-      const options = {
-        immediate: true
-      }
-      if (has(watchOption, 'deep')) {
-        options.deep = watchOption.deep
-      }
-      let isBtn = true
-      return vm.$watch(() => {
-        return watchOption.watch.call(vm)
-      }, (newVal, oldVal) => {
-        if (isBtn && watchOption.immediate !== true) {
-          isBtn = false
-          if (watchOption.value == newVal) {
-            return
-          }
+    if (this.vm) {
+      throw new Error('[vue-watch-component] An instance can only be used on one component')
+    }
+    const options = this.options
+    const watchOptions = {
+      immediate: true
+    }
+    if (util.has(options, 'deep')) {
+      watchOptions.deep = options.deep
+    }
+    let isBtn = true
+    const unwatch = vm.$watch(() => {
+      return options.watch.call(vm)
+    }, (newVal, oldVal) => {
+      if (isBtn && options.immediate !== true) {
+        isBtn = false
+        if (options.value === newVal) {
+          return
         }
-        if (typeof watchOption.handler === 'function' && (has(watchOption, 'value') || watchOption.immediate === true)) {
-          watchOption.handler.call(vm, newVal, oldVal)
-        }
-        watchOption.value = newVal
-      }, options)
-    })
-    this.components.push(vm)
-    this.componentsSubs.push(componentsSubs)
+      }
+      if (typeof options.handler === 'function' && (util.has(options, 'value') || options.immediate === true)) {
+        options.handler.call(vm, newVal, oldVal)
+      }
+      options.value = newVal
+    }, watchOptions)
+    this.vm = vm
+    this.unwatch = unwatch
   }
-  destroy (vm) {
-    const index = this.components.indexOf(vm)
-    if (index === -1) return
-    this.components.splice(index, 1)
-    const componentsSubs = this.componentsSubs.splice(index, 1)
-    componentsSubs.forEach(componentsSub => {
-      componentsSub.forEach(unwatch => unwatch())
-    })
+  destroy () {
+    this.vm = null
+    this.unwatch()
+    this.unwatch = null
   }
 }
 
 const toBe = (vm, callback) => {
   const { watchComponents } = vm.$options
-  if (!isArray(watchComponents)) return
+  if (!util.isArray(watchComponents)) return
   watchComponents.forEach(watchComponent => {
     callback(watchComponent)
   })

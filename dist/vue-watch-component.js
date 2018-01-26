@@ -44,78 +44,81 @@ var createClass = function () {
   };
 }();
 
-function isArray(arg) {
-  return Object.prototype.toString.call(arg) === '[object Array]';
-}
-function has(obj, key) {
-  return Object.prototype.hasOwnProperty.call(obj, key);
-}
+
+
+
+
+
+
+var _extends = Object.assign || function (target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i];
+
+    for (var key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        target[key] = source[key];
+      }
+    }
+  }
+
+  return target;
+};
+
+var util = {
+  isArray: function isArray(arg) {
+    return Object.prototype.toString.call(arg) === '[object Array]';
+  },
+  has: function has(obj, key) {
+    return Object.prototype.hasOwnProperty.call(obj, key);
+  }
+};
 
 var VueWatchComponent = function () {
-  function VueWatchComponent() {
+  function VueWatchComponent(options) {
     classCallCheck(this, VueWatchComponent);
 
-    this.watches = [];
-    this.components = [];
-    this.componentsSubs = [];
+    this.options = _extends({}, options);
+    this.vm = null;
+    this.unwatch = null;
   }
 
   createClass(VueWatchComponent, [{
-    key: 'add',
-    value: function add(watch) {
-      this.watches.push(watch);
-      return this;
-    }
-  }, {
-    key: 'remove',
-    value: function remove(watch) {
-      var index = this.watches.indexOf(watch);
-      if (index > -1) {
-        this.watches.splice(index, 1);
-      }
-      return this;
-    }
-  }, {
     key: 'init',
     value: function init(vm) {
-      var componentsSubs = this.watches.map(function (watchOption) {
-        var options = {
-          immediate: true
-        };
-        if (has(watchOption, 'deep')) {
-          options.deep = watchOption.deep;
+      if (this.vm) {
+        throw new Error('[vue-watch-component] An instance can only be used on one component');
+      }
+      var options = this.options;
+      var watchOptions = {
+        immediate: true
+      };
+      if (util.has(options, 'deep')) {
+        watchOptions.deep = options.deep;
+      }
+      var isBtn = true;
+      var unwatch = vm.$watch(function () {
+        return options.watch.call(vm);
+      }, function (newVal, oldVal) {
+        if (isBtn && options.immediate !== true) {
+          isBtn = false;
+          if (options.value === newVal) {
+            return;
+          }
         }
-        var isBtn = true;
-        return vm.$watch(function () {
-          return watchOption.watch.call(vm);
-        }, function (newVal, oldVal) {
-          if (isBtn && watchOption.immediate !== true) {
-            isBtn = false;
-            if (watchOption.value == newVal) {
-              return;
-            }
-          }
-          if (typeof watchOption.handler === 'function' && (has(watchOption, 'value') || watchOption.immediate === true)) {
-            watchOption.handler.call(vm, newVal, oldVal);
-          }
-          watchOption.value = newVal;
-        }, options);
-      });
-      this.components.push(vm);
-      this.componentsSubs.push(componentsSubs);
+        if (typeof options.handler === 'function' && (util.has(options, 'value') || options.immediate === true)) {
+          options.handler.call(vm, newVal, oldVal);
+        }
+        options.value = newVal;
+      }, watchOptions);
+      this.vm = vm;
+      this.unwatch = unwatch;
     }
   }, {
     key: 'destroy',
-    value: function destroy(vm) {
-      var index = this.components.indexOf(vm);
-      if (index === -1) return;
-      this.components.splice(index, 1);
-      var componentsSubs = this.componentsSubs.splice(index, 1);
-      componentsSubs.forEach(function (componentsSub) {
-        componentsSub.forEach(function (unwatch) {
-          return unwatch();
-        });
-      });
+    value: function destroy() {
+      this.vm = null;
+      this.unwatch();
+      this.unwatch = null;
     }
   }]);
   return VueWatchComponent;
@@ -124,7 +127,7 @@ var VueWatchComponent = function () {
 var toBe = function toBe(vm, callback) {
   var watchComponents = vm.$options.watchComponents;
 
-  if (!isArray(watchComponents)) return;
+  if (!util.isArray(watchComponents)) return;
   watchComponents.forEach(function (watchComponent) {
     callback(watchComponent);
   });
