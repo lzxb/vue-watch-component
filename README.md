@@ -20,15 +20,15 @@ Vue.use(WatchComponent)
 
 // 1、创建一个Watch Component 实例
 const watchOptins = {
-  value: 0, // 设置默认值
-  deep: false, // 是否检测对象内部的值发生变化，默认false
-  immediate: false, // 是否立即触发handler钩子回调，默认false
-  watch () { // 观察表达式，必传参数
+  value: 0, // 设置默认值，可选项
+  deep: false, // 是否检测对象内部的值发生变化，默认false，可选项
+  immediate: false, // 是否立即触发handler钩子回调，默认false，可选项
+  watch () { // 观察表达式，必选项
     // 观察数据变化，基于vm.$watch实现
     // this 会指向到注入的组件
     return this.globalState.count
   },
-  handler (newVal, oldVal) { // 处理value值变化的回调，必传参数
+  handler (newVal, oldVal) { // 处理value值变化的回调，必选项
     // this 会指向到注入的组件
     // 观察的数据发生变化，会调用此钩子
   }
@@ -42,7 +42,7 @@ const globalState = {
 }
 
 // 3、在组件中使用，只有在组件激活时，才会进行观察
-const MyComponent = { // 注意：你需要保证该组件同时只会被实例一次
+const MyComponent = {
   watchComponents: [
     myWatch
   ],

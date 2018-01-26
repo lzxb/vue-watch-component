@@ -17,16 +17,13 @@ class VueWatchComponent {
     }
     this.initialOptions = options
     this.options = { ...options }
-    this.vm = null
-    this.unwatch = null
+    this.vmArr = []
+    this.unwatchArr = []
   }
   clone () {
     return new VueWatchComponent(this.initialOptions)
   }
   init (vm) {
-    if (this.vm) {
-      throw new Error('[vue-watch-component] Only one component instance is bound to use')
-    }
     const options = this.options
     const watchOptions = {
       immediate: true
@@ -49,13 +46,14 @@ class VueWatchComponent {
       }
       options.value = newVal
     }, watchOptions)
-    this.vm = vm
-    this.unwatch = unwatch
+    this.vmArr.push(vm)
+    this.unwatchArr.push(unwatch)
   }
-  destroy () {
-    this.vm = null
-    this.unwatch()
-    this.unwatch = null
+  destroy (vm) {
+    const index = this.vmArr.indexOf(vm)
+    this.vmArr.splice(index, 1)
+    this.unwatchArr[index]()
+    this.unwatchArr.splice(index, 1)
   }
 }
 

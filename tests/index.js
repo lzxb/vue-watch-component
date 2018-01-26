@@ -29,21 +29,9 @@ ava('errors', async t => {
   } catch (e) {
     errors.push(e.toString())
   }
-  try {
-    const watchOptions = {
-      watch () {},
-      handler () {}
-    }
-    const wc = new WatchComponent(watchOptions)
-    return new Vue({ watchComponents: [wc, wc] })
-  } catch (e) {
-    errors.push(e.toString())
-  }
-  console.log(errors)
   t.deepEqual(errors, [
     'Error: [vue-watch-component] options.watch must be a function type',
-    'Error: [vue-watch-component] options.handler must be a function type',
-    'Error: [vue-watch-component] Only one component instance is bound to use'
+    'Error: [vue-watch-component] options.handler must be a function type'
   ])
 })
 
@@ -72,8 +60,8 @@ ava('base', async t => {
   t.is(watchLog.count, 0)
   t.is(globalState.count, 0)
   t.is(vm.globalState.count, 0)
-  t.is(typeof wc.unwatch, 'function')
-  t.is(wc.vm, vm)
+  t.is(wc.vmArr.length, 1)
+  t.is(wc.unwatchArr.length, 1)
 
   globalState.count++
   await vm.$nextTick()
@@ -87,8 +75,8 @@ ava('base', async t => {
   t.is(globalState.count, 2)
   t.is(vm.globalState.count, 2)
   t.is(watchLog.count, 1)
-  t.is(wc.unwatch, null)
-  t.is(wc.vm, null)
+  t.is(wc.vmArr.length, 0)
+  t.is(wc.unwatchArr.length, 0)
 })
 
 ava('immediate = true', async t => {
@@ -117,8 +105,8 @@ ava('immediate = true', async t => {
   t.is(watchLog.count, 1)
   t.is(globalState.count, 0)
   t.is(vm.globalState.count, 0)
-  t.is(typeof wc.unwatch, 'function')
-  t.is(wc.vm, vm)
+  t.is(wc.vmArr.length, 1)
+  t.is(wc.unwatchArr.length, 1)
 
   globalState.count++
   await vm.$nextTick()
@@ -132,8 +120,8 @@ ava('immediate = true', async t => {
   t.is(globalState.count, 2)
   t.is(vm.globalState.count, 2)
   t.is(watchLog.count, 2)
-  t.is(wc.unwatch, null)
-  t.is(wc.vm, null)
+  t.is(wc.vmArr.length, 0)
+  t.is(wc.unwatchArr.length, 0)
 })
 
 ava('deep = false', async t => {
@@ -163,8 +151,8 @@ ava('deep = false', async t => {
   t.is(watchLog.count, 1)
   t.is(globalState.count, 0)
   t.is(vm.globalState.count, 0)
-  t.is(typeof wc.unwatch, 'function')
-  t.is(wc.vm, vm)
+  t.is(wc.vmArr.length, 1)
+  t.is(wc.unwatchArr.length, 1)
 
   globalState.count++
   await vm.$nextTick()
@@ -178,8 +166,8 @@ ava('deep = false', async t => {
   t.is(globalState.count, 2)
   t.is(vm.globalState.count, 2)
   t.is(watchLog.count, 1)
-  t.is(wc.unwatch, null)
-  t.is(wc.vm, null)
+  t.is(wc.vmArr.length, 0)
+  t.is(wc.unwatchArr.length, 0)
 })
 
 ava('immediate = true', async t => {
@@ -208,8 +196,8 @@ ava('immediate = true', async t => {
   t.is(watchLog.count, 1)
   t.is(globalState.count, 0)
   t.is(vm.globalState.count, 0)
-  t.is(typeof wc.unwatch, 'function')
-  t.is(wc.vm, vm)
+  t.is(wc.vmArr.length, 1)
+  t.is(wc.unwatchArr.length, 1)
 
   globalState.count++
   await vm.$nextTick()
@@ -223,8 +211,8 @@ ava('immediate = true', async t => {
   t.is(globalState.count, 2)
   t.is(vm.globalState.count, 2)
   t.is(watchLog.count, 2)
-  t.is(wc.unwatch, null)
-  t.is(wc.vm, null)
+  t.is(wc.vmArr.length, 0)
+  t.is(wc.unwatchArr.length, 0)
 })
 
 ava('deep = true', async t => {
@@ -254,8 +242,8 @@ ava('deep = true', async t => {
   t.is(watchLog.count, 1)
   t.is(globalState.count, 0)
   t.is(vm.globalState.count, 0)
-  t.is(typeof wc.unwatch, 'function')
-  t.is(wc.vm, vm)
+  t.is(wc.vmArr.length, 1)
+  t.is(wc.unwatchArr.length, 1)
 
   globalState.count++
   await vm.$nextTick()
@@ -269,8 +257,8 @@ ava('deep = true', async t => {
   t.is(globalState.count, 2)
   t.is(vm.globalState.count, 2)
   t.is(watchLog.count, 2)
-  t.is(wc.unwatch, null)
-  t.is(wc.vm, null)
+  t.is(wc.vmArr.length, 0)
+  t.is(wc.unwatchArr.length, 0)
 })
 
 ava('value = 0', async t => {
@@ -299,8 +287,8 @@ ava('value = 0', async t => {
   t.is(watchLog.count, 0)
   t.is(globalState.count, 0)
   t.is(vm.globalState.count, 0)
-  t.is(typeof wc.unwatch, 'function')
-  t.is(wc.vm, vm)
+  t.is(wc.vmArr.length, 1)
+  t.is(wc.unwatchArr.length, 1)
 
   globalState.count++
   await vm.$nextTick()
@@ -314,8 +302,8 @@ ava('value = 0', async t => {
   t.is(globalState.count, 2)
   t.is(vm.globalState.count, 2)
   t.is(watchLog.count, 1)
-  t.is(wc.unwatch, null)
-  t.is(wc.vm, null)
+  t.is(wc.vmArr.length, 0)
+  t.is(wc.unwatchArr.length, 0)
 })
 
 ava('value = -1', async t => {
@@ -344,8 +332,8 @@ ava('value = -1', async t => {
   t.is(watchLog.count, 1)
   t.is(globalState.count, 0)
   t.is(vm.globalState.count, 0)
-  t.is(typeof wc.unwatch, 'function')
-  t.is(wc.vm, vm)
+  t.is(wc.vmArr.length, 1)
+  t.is(wc.unwatchArr.length, 1)
 
   globalState.count++
   await vm.$nextTick()
@@ -359,8 +347,8 @@ ava('value = -1', async t => {
   t.is(globalState.count, 2)
   t.is(vm.globalState.count, 2)
   t.is(watchLog.count, 2)
-  t.is(wc.unwatch, null)
-  t.is(wc.vm, null)
+  t.is(wc.vmArr.length, 0)
+  t.is(wc.unwatchArr.length, 0)
 })
 
 ava('value = -1 && immediate = true', async t => {
@@ -390,8 +378,8 @@ ava('value = -1 && immediate = true', async t => {
   t.is(watchLog.count, 1)
   t.is(globalState.count, 0)
   t.is(vm.globalState.count, 0)
-  t.is(typeof wc.unwatch, 'function')
-  t.is(wc.vm, vm)
+  t.is(wc.vmArr.length, 1)
+  t.is(wc.unwatchArr.length, 1)
 
   globalState.count++
   await vm.$nextTick()
@@ -405,6 +393,6 @@ ava('value = -1 && immediate = true', async t => {
   t.is(globalState.count, 2)
   t.is(vm.globalState.count, 2)
   t.is(watchLog.count, 2)
-  t.is(wc.unwatch, null)
-  t.is(wc.vm, null)
+  t.is(wc.vmArr.length, 0)
+  t.is(wc.unwatchArr.length, 0)
 })

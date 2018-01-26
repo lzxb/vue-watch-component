@@ -81,8 +81,8 @@ var VueWatchComponent = function () {
     }
     this.initialOptions = options;
     this.options = _extends({}, options);
-    this.vm = null;
-    this.unwatch = null;
+    this.vmArr = [];
+    this.unwatchArr = [];
   }
 
   createClass(VueWatchComponent, [{
@@ -93,9 +93,6 @@ var VueWatchComponent = function () {
   }, {
     key: 'init',
     value: function init(vm) {
-      if (this.vm) {
-        throw new Error('[vue-watch-component] Only one component instance is bound to use');
-      }
       var options = this.options;
       var watchOptions = {
         immediate: true
@@ -118,15 +115,16 @@ var VueWatchComponent = function () {
         }
         options.value = newVal;
       }, watchOptions);
-      this.vm = vm;
-      this.unwatch = unwatch;
+      this.vmArr.push(vm);
+      this.unwatchArr.push(unwatch);
     }
   }, {
     key: 'destroy',
-    value: function destroy() {
-      this.vm = null;
-      this.unwatch();
-      this.unwatch = null;
+    value: function destroy(vm) {
+      var index = this.vmArr.indexOf(vm);
+      this.vmArr.splice(index, 1);
+      this.unwatchArr[index]();
+      this.unwatchArr.splice(index, 1);
     }
   }]);
   return VueWatchComponent;
