@@ -9,13 +9,23 @@ const util = {
 
 class VueWatchComponent {
   constructor (options) {
+    if (typeof options.watch !== 'function') {
+      throw new Error('[vue-watch-component] options.watch must be a function type')
+    }
+    if (typeof options.handler !== 'function') {
+      throw new Error('[vue-watch-component] options.handler must be a function type')
+    }
+    this.initialOptions = options
     this.options = { ...options }
     this.vm = null
     this.unwatch = null
   }
+  clone () {
+    return new VueWatchComponent(this.initialOptions)
+  }
   init (vm) {
     if (this.vm) {
-      throw new Error('[vue-watch-component] An instance can only be used on one component')
+      throw new Error('[vue-watch-component] Only one component instance is bound to use')
     }
     const options = this.options
     const watchOptions = {
@@ -34,7 +44,7 @@ class VueWatchComponent {
           return
         }
       }
-      if (typeof options.handler === 'function' && (util.has(options, 'value') || options.immediate === true)) {
+      if ((util.has(options, 'value') || options.immediate === true)) {
         options.handler.call(vm, newVal, oldVal)
       }
       options.value = newVal

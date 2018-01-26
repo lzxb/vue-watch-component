@@ -2,19 +2,50 @@ const ava = require('ava')
 const Vue = require('vue')
 const WatchComponent = require('../dist/vue-watch-component')
 
-// const helpers = {
-//   pause (time) {
-//     let ready = null
-//     setTimeout(() => {
-//       ready()
-//     }, time || 0)
-//     return new Promise(resolve => {
-//       ready = resolve
-//     })
-//   }
-// }
-
 Vue.use(WatchComponent)
+
+ava('clone', async t => {
+  const watchOptions = {
+    watch () {},
+    handler () {}
+  }
+  const wc = new WatchComponent(watchOptions)
+  t.is(wc.initialOptions, wc.clone().initialOptions)
+})
+
+ava('errors', async t => {
+  const errors = []
+  try {
+    const watchOptions = {}
+    return new WatchComponent(watchOptions)
+  } catch (e) {
+    errors.push(e.toString())
+  }
+  try {
+    const watchOptions = {
+      watch () {}
+    }
+    return new WatchComponent(watchOptions)
+  } catch (e) {
+    errors.push(e.toString())
+  }
+  try {
+    const watchOptions = {
+      watch () {},
+      handler () {}
+    }
+    const wc = new WatchComponent(watchOptions)
+    return new Vue({ watchComponents: [wc, wc] })
+  } catch (e) {
+    errors.push(e.toString())
+  }
+  console.log(errors)
+  t.deepEqual(errors, [
+    'Error: [vue-watch-component] options.watch must be a function type',
+    'Error: [vue-watch-component] options.handler must be a function type',
+    'Error: [vue-watch-component] Only one component instance is bound to use'
+  ])
+})
 
 ava('base', async t => {
   const watchLog = {

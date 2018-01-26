@@ -77,16 +77,28 @@ var VueWatchComponent = function () {
   function VueWatchComponent(options) {
     classCallCheck(this, VueWatchComponent);
 
+    if (typeof options.watch !== 'function') {
+      throw new Error('[vue-watch-component] options.watch must be a function type');
+    }
+    if (typeof options.handler !== 'function') {
+      throw new Error('[vue-watch-component] options.handler must be a function type');
+    }
+    this.initialOptions = options;
     this.options = _extends({}, options);
     this.vm = null;
     this.unwatch = null;
   }
 
   createClass(VueWatchComponent, [{
+    key: 'clone',
+    value: function clone() {
+      return new VueWatchComponent(this.initialOptions);
+    }
+  }, {
     key: 'init',
     value: function init(vm) {
       if (this.vm) {
-        throw new Error('[vue-watch-component] An instance can only be used on one component');
+        throw new Error('[vue-watch-component] Only one component instance is bound to use');
       }
       var options = this.options;
       var watchOptions = {
@@ -105,7 +117,7 @@ var VueWatchComponent = function () {
             return;
           }
         }
-        if (typeof options.handler === 'function' && (util.has(options, 'value') || options.immediate === true)) {
+        if (util.has(options, 'value') || options.immediate === true) {
           options.handler.call(vm, newVal, oldVal);
         }
         options.value = newVal;
@@ -166,7 +178,7 @@ VueWatchComponent.install = function (Vue) {
   });
 };
 
-VueWatchComponent.version = '0.0.1';
+VueWatchComponent.version = '0.0.2';
 
 if ((typeof window === 'undefined' ? 'undefined' : _typeof(window)) === 'object' && window.Vue) {
   window.Vue.use(VueWatchComponent);

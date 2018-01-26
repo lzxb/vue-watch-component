@@ -19,24 +19,22 @@ import WatchComponent from 'vue-watch-component'
 Vue.use(WatchComponent)
 
 // 1、创建一个Watch Component 实例
-const myWatch = new WatchComponent()
-const watchItem = {
+const watchOptins = {
+  value: 0, // 设置默认值
   deep: false, // 是否检测对象内部的值发生变化，默认false
   immediate: false, // 是否立即触发handler钩子回调，默认false
-  watch () {
+  watch () { // 观察表达式，必传参数
     // 观察数据变化，基于vm.$watch实现
     // this 会指向到注入的组件
     return this.globalState.count
   },
-  handler (newVal, oldVal) {
+  handler (newVal, oldVal) { // 处理value值变化的回调，必传参数
     // this 会指向到注入的组件
     // 观察的数据发生变化，会调用此钩子
   }
 }
-// 添加观察
-myWatch.add(watchItem)
-// 解除观察
-// myWatch.remove(watchItem)
+
+const myWatch = new WatchComponent(watchOptins)
 
 // 2、全局状态，可以使用Vuet、vuex等第三方状态管理库
 const globalState = {
@@ -44,7 +42,7 @@ const globalState = {
 }
 
 // 3、在组件中使用，只有在组件激活时，才会进行观察
-const MyComponent = {
+const MyComponent = { // 注意：你需要保证该组件同时只会被实例一次
   watchComponents: [
     myWatch
   ],
